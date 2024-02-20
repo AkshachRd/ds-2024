@@ -1,13 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using StackExchange.Redis;
 
 namespace Valuator.Pages;
 
-public class IndexModel : PageModel
+public class IndexModel : RedisPageModel
 {
     private readonly ILogger<IndexModel> _logger;
 
-    public IndexModel(ILogger<IndexModel> logger)
+    public IndexModel(ILogger<IndexModel> logger, ConnectionMultiplexer redis) : base(redis)
     {
         _logger = logger;
     }
@@ -22,15 +23,15 @@ public class IndexModel : PageModel
         _logger.LogDebug(text);
 
         string id = Guid.NewGuid().ToString();
-
+        
         string textKey = "TEXT-" + id;
-        //TODO: сохранить в БД text по ключу textKey
+        RedisDatabase.StringSet(textKey, text);
 
         string rankKey = "RANK-" + id;
-        //TODO: посчитать rank и сохранить в БД по ключу rankKey
+        RedisDatabase.StringSet(rankKey, "1");
 
         string similarityKey = "SIMILARITY-" + id;
-        //TODO: посчитать similarity и сохранить в БД по ключу similarityKey
+        RedisDatabase.StringSet(similarityKey, "2");
 
         return Redirect($"summary?id={id}");
     }
