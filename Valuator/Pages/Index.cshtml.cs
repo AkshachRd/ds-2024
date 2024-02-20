@@ -20,6 +20,11 @@ public class IndexModel : RedisPageModel
 
     public IActionResult OnPost(string text)
     {
+        if (String.IsNullOrEmpty(text))
+        {
+            return Redirect("about");
+        }
+        
         _logger.LogDebug(text);
 
         string id = Guid.NewGuid().ToString();
