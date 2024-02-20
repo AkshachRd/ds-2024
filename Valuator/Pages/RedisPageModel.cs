@@ -6,5 +6,8 @@ namespace Valuator.Pages;
 
 public class RedisPageModel(ConnectionMultiplexer redis) : PageModel
 {
+    private string _hostName = "localhost";
+    private int _port = 6379;
     public IDatabase RedisDatabase => redis.GetDatabase();
+    public IServer RedisServer => redis.GetServer(_hostName, _port);
 }
