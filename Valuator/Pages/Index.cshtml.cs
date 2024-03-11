@@ -1,13 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using StackExchange.Redis;
 
 namespace Valuator.Pages;
 
-public class IndexModel : PageModel
+public class IndexModel : RedisPageModel
 {
     private readonly ILogger<IndexModel> _logger;
 
-    public IndexModel(ILogger<IndexModel> logger)
+    public IndexModel(ILogger<IndexModel> logger, ConnectionMultiplexer redis) : base(redis)
     {
         _logger = logger;
     }
@@ -19,19 +20,39 @@ public class IndexModel : PageModel
 
     public IActionResult OnPost(string text)
     {
+        if (String.IsNullOrEmpty(text))
+        {
+            return Redirect("about");
+        }
+        
         _logger.LogDebug(text);
 
         string id = Guid.NewGuid().ToString();
-
+        
+        string similarityKey = "SIMILARITY-" + id;
+        RedisDatabase.StringSet(similarityKey, GetSimilarity(text, id));
+        
         string textKey = "TEXT-" + id;
-        //TODO: сохранить в БД text по ключу textKey
+        RedisDatabase.StringSet(textKey, text);
 
         string rankKey = "RANK-" + id;
-        //TODO: посчитать rank и сохранить в БД по ключу rankKey
-
-        string similarityKey = "SIMILARITY-" + id;
-        //TODO: посчитать similarity и сохранить в БД по ключу similarityKey
+        RedisDatabase.StringSet(rankKey, GetRank(text));
 
         return Redirect($"summary?id={id}");
+    }
+    
+    private int GetSimilarity(string text, string id)
+    {
+        var keys = RedisServer.Keys();
+        
+        return keys.Any(key => 
+            key.ToString().Substring(0, 5) == "TEXT-" && RedisDatabase.StringGet(key) == text) ? 1 : 0;
+    }
+
+    private static double GetRank(string text)
+    {
+        var notLetterCount = text.Count(ch => !char.IsLetter(ch));
+
+        return (double) notLetterCount / text.Length;
     }
 }
