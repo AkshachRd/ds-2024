@@ -14,7 +14,34 @@ namespace RankCalculator
         {
             Console.WriteLine("Producer started");
 
-            CalculateRankAsync();
+            using (var c = ConnectToNats())
+            {
+                var s = c.SubscribeAsync("valuator.processing.rank", "rank_calculator", (sender, args) =>
+                {
+                    var id = Encoding.UTF8.GetString(args.Message.Data);
+                    
+                    string text = GetText(id);
+                    var rank = CalculateRank(text);
+                    SetRank(id, rank);
+
+                    c.Publish(args.Message.Reply, null);
+                });
+                
+                while (true)
+                {
+                    Console.WriteLine("Worker listening...");
+                    Thread.Sleep(TimeSpan.FromSeconds(5));
+                }
+            }
+        }
+        
+        private static string GetText(string id) => RedisDatabase.StringGet("TEXT-" + id);
+        private static bool SetRank(string id, double rank) => RedisDatabase.StringSet("RANK" + id, rank);
+
+        private static double CalculateRank(string text)
+        {
+            var notLetterCount = text.Count(ch => !char.IsLetter(ch));
+            return (double)notLetterCount / text.Length;
         }
         
         private static IConnection ConnectToNats()
@@ -36,33 +63,6 @@ namespace RankCalculator
             return redis.GetDatabase();
         }
 
-        private static void CalculateRankAsync()
-        {
-            var redisDb = ConnectToRedis();
-            
-            using (var c = ConnectToNats())
-            {
-                var s = c.SubscribeAsync("valuator.processing.rank", "rank_calculator", (sender, args) =>
-                {
-                    var id = Encoding.UTF8.GetString(args.Message.Data);
-                    var textKey = "TEXT-" + id;
-                    string text = redisDb.StringGet(textKey);
-                    
-                    var notLetterCount = text.Count(ch => !char.IsLetter(ch));
-                    var rank = (double)notLetterCount / text.Length;
-            
-                    var rankKey = "RANK-" + id;
-                    redisDb.StringSet(rankKey, rank);
-
-                    c.Publish(args.Message.Reply, null);
-                });
-                
-                while (true)
-                {
-                    Console.WriteLine("Worker listening...");
-                    Thread.Sleep(TimeSpan.FromSeconds(5));
-                }
-            }
-        }
+        private static IDatabase RedisDatabase => ConnectToRedis();
     }
 }
