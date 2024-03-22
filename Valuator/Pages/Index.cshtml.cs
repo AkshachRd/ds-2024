@@ -1,5 +1,10 @@
+using System;
+using System.Linq;
+using System.Text;
+using NATS.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 
 namespace Valuator.Pages;
@@ -35,8 +40,7 @@ public class IndexModel : RedisPageModel
         string textKey = "TEXT-" + id;
         RedisDatabase.StringSet(textKey, text);
 
-        string rankKey = "RANK-" + id;
-        RedisDatabase.StringSet(rankKey, GetRank(text));
+        CalculateRank(id).Wait();
 
         return Redirect($"summary?id={id}");
     }
@@ -48,11 +52,31 @@ public class IndexModel : RedisPageModel
         return keys.Any(key => 
             key.ToString().Substring(0, 5) == "TEXT-" && RedisDatabase.StringGet(key) == text) ? 1 : 0;
     }
-
-    private static double GetRank(string text)
+    
+    private static IConnection ConnectToNats()
     {
-        var notLetterCount = text.Count(ch => !char.IsLetter(ch));
+        var natsUrl = Environment.GetEnvironmentVariable("NATS_URL");
+            
+        ConnectionFactory factory = new ConnectionFactory();
 
-        return (double) notLetterCount / text.Length;
+        var options = ConnectionFactory.GetDefaultOptions();
+        options.Url = natsUrl;
+            
+        return factory.CreateConnection(options);
+    }
+
+    private static Task CalculateRank(string id)
+    {
+        using (var c = ConnectToNats())
+        {
+            var data = Encoding.UTF8.GetBytes(id);
+            var task = c.RequestAsync("valuator.processing.rank", data);
+
+            task.Wait();
+            
+            c.Drain();
+            
+            return task;
+        }
     }
 }

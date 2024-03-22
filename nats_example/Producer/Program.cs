@@ -34,7 +34,7 @@ namespace Producer
                 while (!ct.IsCancellationRequested)
                 {
                     string m = $"#{count}";
-                    Console.WriteLine("Produced: {0}", m);
+                    Console.WriteLine("Produced: {0}", m);  
                     byte[] data = Encoding.UTF8.GetBytes(m);
                     c.Publish("valuator.processing.rank", data);
                     await Task.Delay(1000);

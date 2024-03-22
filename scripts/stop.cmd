@@ -1,2 +1,2 @@
-cd ./../Valuator
+cd ..
 docker compose stop

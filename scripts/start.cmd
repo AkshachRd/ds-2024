@@ -1,2 +1,2 @@
-cd ./../Valuator
-docker compose up
+cd ..
+docker compose up --build
