@@ -36,7 +36,7 @@ namespace RankCalculator
         }
         
         private static string GetText(string id) => RedisDatabase.StringGet("TEXT-" + id);
-        private static bool SetRank(string id, double rank) => RedisDatabase.StringSet("RANK" + id, rank);
+        private static bool SetRank(string id, double rank) => RedisDatabase.StringSet("RANK-" + id, rank);
 
         private static double CalculateRank(string text)
         {
