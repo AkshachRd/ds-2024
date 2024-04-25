@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using NATS.Client;
 using StackExchange.Redis;
 
-namespace RankCalculator
+namespace SimilarityCalculator
 {
     internal class Program
     {
@@ -14,15 +14,15 @@ namespace RankCalculator
         {
             using (var c = ConnectToNats())
             {
-                var s = c.SubscribeAsync("rank.calculate", "rank_calculator", (sender, args) =>
+                var s = c.SubscribeAsync("similarity.calculate", "similarity_calculator", (sender, args) =>
                 {
                     var id = Encoding.UTF8.GetString(args.Message.Data);
                     
                     string text = GetText(id);
-                    var rank = CalculateRank(text);
-                    SetRank(id, rank);
+                    var similarity = CalculateSimilarity(text);
+                    SetSimilarity(id, similarity);
 
-                    c.Publish("rank.calculated", BitConverter.GetBytes(rank));
+                    c.Publish("similarity.calculated", BitConverter.GetBytes(similarity));
                 });
                 
                 while (true)
@@ -33,12 +33,24 @@ namespace RankCalculator
         }
         
         private static string GetText(string id) => RedisDatabase.StringGet("TEXT-" + id);
-        private static bool SetRank(string id, double rank) => RedisDatabase.StringSet("RANK-" + id, rank);
+        private static bool SetSimilarity(string id, int similarity) => RedisDatabase.StringSet("SIMILARITY-" + id, similarity);
 
-        private static double CalculateRank(string text)
+        private static int CalculateSimilarity(string text)
         {
-            var notLetterCount = text.Count(ch => !char.IsLetter(ch));
-            return (double)notLetterCount / text.Length;
+            var keys = RedisServer.Keys().ToList();
+            var counter = 0;
+
+            for (int i = 0; i < keys.Count() && counter < 2; i++)
+            {
+                var redisKey = keys[i];
+                if (redisKey.ToString().Substring(0, 5) == "TEXT-" 
+                    && RedisDatabase.StringGet(redisKey) == text)
+                {
+                    counter++;
+                }
+            }
+
+            return counter >= 2 ? 1 : 0;
         }
         
         private static IConnection ConnectToNats()

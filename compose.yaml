@@ -5,6 +5,7 @@ services:
       - ASPNETCORE_URLS=http://+:5001
       - NATS_URL=nats://nats:4222
       - REDIS_URL=redis:6379
+      - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - 5001:5001
     depends_on:
@@ -16,6 +17,7 @@ services:
       - ASPNETCORE_URLS=http://+:5002
       - NATS_URL=nats://nats:4222
       - REDIS_URL=redis:6379
+      - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - 5002:5002
     depends_on:
@@ -44,4 +46,32 @@ services:
     ports:
       - 5010:5010
     depends_on: 
+      - nats
+  similarity-calculator:
+    build: ./SimilarityCalculator
+    environment:
+      - ASPNETCORE_URLS=http://+:5011
+      - NATS_URL=nats://nats:4222
+      - REDIS_URL=redis:6379
+    ports:
+      - 5011:5011
+    depends_on:
+      - nats
+  event-logger-rank:
+    environment:
+      - NATS_URL=nats://nats:4222
+    build:
+      context: .
+      dockerfile: EventLogger/Dockerfile
+    command: ["Rank", "rank.calculated"]
+    depends_on:
+      - nats
+  event-logger-similarity:
+    environment:
+      - NATS_URL=nats://nats:4222
+    build:
+      context: .
+      dockerfile: EventLogger/Dockerfile
+    command: ["Similarity", "similarity.calculated"]
+    depends_on:
       - nats

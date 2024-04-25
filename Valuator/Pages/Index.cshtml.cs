@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using NATS.Client;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,7 @@ namespace Valuator.Pages;
 public class IndexModel : RedisPageModel
 {
     private readonly ILogger<IndexModel> _logger;
+    private readonly IConnection _connection = ConnectToNats();
 
     public IndexModel(ILogger<IndexModel> logger, ConnectionMultiplexer redis) : base(redis)
     {
@@ -34,13 +36,12 @@ public class IndexModel : RedisPageModel
 
         string id = Guid.NewGuid().ToString();
         
-        string similarityKey = "SIMILARITY-" + id;
-        RedisDatabase.StringSet(similarityKey, GetSimilarity(text, id));
-        
         string textKey = "TEXT-" + id;
         RedisDatabase.StringSet(textKey, text);
 
-        CalculateRank(id).Wait();
+        GetSimilarityAsync(id).Wait();
+
+        GetRankAsync(id).Wait();
 
         return Redirect($"summary?id={id}");
     }
@@ -65,18 +66,55 @@ public class IndexModel : RedisPageModel
         return factory.CreateConnection(options);
     }
 
-    private static Task CalculateRank(string id)
+    private Task<double> GetRankAsync(string id)
     {
-        using (var c = ConnectToNats())
-        {
-            var data = Encoding.UTF8.GetBytes(id);
-            var task = c.RequestAsync("valuator.processing.rank", data);
+        var tcs = new TaskCompletionSource<double>();
 
-            task.Wait();
+        var subscription = _connection.SubscribeAsync("rank.calculated");
+        subscription.MessageHandler += (sender, args) =>
+        {
+            try
+            {
+                var result = BitConverter.ToDouble(args.Message.Data);
+                tcs.SetResult(result);
+            }
+            catch (Exception e)
+            {
+                tcs.SetException(new InvalidOperationException("Невозможно преобразовать ответ в число."));
+            }
             
-            c.Drain();
+            subscription.Unsubscribe();
+        };
+        subscription.Start();
+    
+        _connection.Publish("rank.calculate", Encoding.UTF8.GetBytes(id));
+    
+        return tcs.Task;
+    }
+    
+    private Task<int> GetSimilarityAsync(string id)
+    {
+        var tcs = new TaskCompletionSource<int>();
+
+        var subscription = _connection.SubscribeAsync("similarity.calculated");
+        subscription.MessageHandler += (sender, args) =>
+        {
+            try
+            {
+                var result = BitConverter.ToInt32(args.Message.Data);
+                tcs.SetResult(result);
+            }
+            catch (Exception e)
+            {
+                tcs.SetException(new InvalidOperationException("Невозможно преобразовать ответ в число."));
+            }
             
-            return task;
-        }
+            subscription.Unsubscribe();
+        };
+        subscription.Start();
+    
+        _connection.Publish("similarity.calculate", Encoding.UTF8.GetBytes(id));
+    
+        return tcs.Task;
     }
 }
