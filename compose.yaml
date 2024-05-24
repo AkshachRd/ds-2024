@@ -47,16 +47,6 @@ services:
       - 5010:5010
     depends_on: 
       - nats
-  similarity-calculator:
-    build: ./SimilarityCalculator
-    environment:
-      - ASPNETCORE_URLS=http://+:5011
-      - NATS_URL=nats://nats:4222
-      - REDIS_URL=redis:6379
-    ports:
-      - 5011:5011
-    depends_on:
-      - nats
   event-logger-rank:
     environment:
       - NATS_URL=nats://nats:4222

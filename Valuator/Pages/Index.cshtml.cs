@@ -36,22 +36,16 @@ public class IndexModel : RedisPageModel
 
         string id = Guid.NewGuid().ToString();
         
+        string similarityKey = "SIMILARITY-" + id;
+        RedisDatabase.StringSet(similarityKey, GetSimilarity(text, id));
+        
         string textKey = "TEXT-" + id;
         RedisDatabase.StringSet(textKey, text);
 
-        GetSimilarityAsync(id).Wait();
 
         GetRankAsync(id).Wait();
 
         return Redirect($"summary?id={id}");
-    }
-    
-    private int GetSimilarity(string text, string id)
-    {
-        var keys = RedisServer.Keys();
-        
-        return keys.Any(key => 
-            key.ToString().Substring(0, 5) == "TEXT-" && RedisDatabase.StringGet(key) == text) ? 1 : 0;
     }
     
     private static IConnection ConnectToNats()
@@ -92,29 +86,14 @@ public class IndexModel : RedisPageModel
         return tcs.Task;
     }
     
-    private Task<int> GetSimilarityAsync(string id)
+    private int GetSimilarity(string text, string id)
     {
-        var tcs = new TaskCompletionSource<int>();
+        var keys = RedisServer.Keys();
+        var similarity = keys.Any(key => 
+            key.ToString().Substring(0, 5) == "TEXT-" && RedisDatabase.StringGet(key) == text) ? 1 : 0;
+        
+        _connection.Publish("similarity.calculated", BitConverter.GetBytes(similarity));
 
-        var subscription = _connection.SubscribeAsync("similarity.calculated");
-        subscription.MessageHandler += (sender, args) =>
-        {
-            try
-            {
-                var result = BitConverter.ToInt32(args.Message.Data);
-                tcs.SetResult(result);
-            }
-            catch (Exception e)
-            {
-                tcs.SetException(new InvalidOperationException("Невозможно преобразовать ответ в число."));
-            }
-            
-            subscription.Unsubscribe();
-        };
-        subscription.Start();
-    
-        _connection.Publish("similarity.calculate", Encoding.UTF8.GetBytes(id));
-    
-        return tcs.Task;
+        return similarity;
     }
 }
