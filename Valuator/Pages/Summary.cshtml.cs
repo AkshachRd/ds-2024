@@ -26,7 +26,7 @@ public class SummaryModel : PageModel
 
     public void OnGet(string id, string region)
     {
-        _logger.LogDebug(id);
+        _logger.LogInformation("LOOKUP: {id}, {region}", id, region);
         _redis = ConnectToRedis(region);
 
         string rankKey = "RANK-" + id;

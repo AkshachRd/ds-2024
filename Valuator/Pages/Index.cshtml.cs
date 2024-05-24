@@ -36,18 +36,22 @@ public class IndexModel : PageModel
             return Redirect("about");
         }
         
-        _logger.LogDebug(text);
+        string id = Guid.NewGuid().ToString();
+        
+        _logger.LogInformation("LOOKUP: {id}, {region}", id, region);
         _redis = ConnectToRedis(region);
         
-        string id = Guid.NewGuid().ToString();
-
         string similarityKey = "SIMILARITY-" + id;
         RedisDatabase.StringSet(similarityKey, GetSimilarity(text, id));
     
         string textKey = "TEXT-" + id;
         RedisDatabase.StringSet(textKey, text);
 
-        GetRankAsync(id).Wait();
+        var rankTask = GetRankAsync(text);
+        rankTask.Wait();
+        
+        string rankKey = "RANK-" + id;
+        RedisDatabase.StringSet(rankKey, rankTask.Result);
         
         return Redirect($"summary?id={id}&region={region}");
     }
@@ -70,7 +74,7 @@ public class IndexModel : PageModel
         return ConnectionMultiplexer.Connect(hostAndPort);
     }
     
-    private Task<double> GetRankAsync(string id)
+    private Task<double> GetRankAsync(string text)
     {
         var tcs = new TaskCompletionSource<double>();
 
@@ -90,8 +94,8 @@ public class IndexModel : PageModel
             subscription.Unsubscribe();
         };
         subscription.Start();
-    
-        _connection.Publish("rank.calculate", Encoding.UTF8.GetBytes(id));
+
+        _connection.Publish("rank.calculate", Encoding.UTF8.GetBytes(text));
     
         return tcs.Task;
     }
