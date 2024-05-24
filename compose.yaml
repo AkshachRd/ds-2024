@@ -4,7 +4,9 @@ services:
     environment:
       - ASPNETCORE_URLS=http://+:5001
       - NATS_URL=nats://nats:4222
-      - REDIS_URL=redis:6379
+      - DB_RUS=localhost:6000
+      - DB_EU=localhost:6001
+      - DB_OTHER=localhost:6002
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - 5001:5001
@@ -16,7 +18,9 @@ services:
     environment:
       - ASPNETCORE_URLS=http://+:5002
       - NATS_URL=nats://nats:4222
-      - REDIS_URL=redis:6379
+      - DB_RUS=localhost:6000
+      - DB_EU=localhost:6001
+      - DB_OTHER=localhost:6002
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - 5002:5002
@@ -42,7 +46,9 @@ services:
     environment:
       - ASPNETCORE_URLS=http://+:5010
       - NATS_URL=nats://nats:4222
-      - REDIS_URL=redis:6379
+      - DB_RUS=localhost:6000
+      - DB_EU=localhost:6001
+      - DB_OTHER=localhost:6002
     ports:
       - 5010:5010
     depends_on: 

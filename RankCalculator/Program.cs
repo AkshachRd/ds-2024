@@ -10,7 +10,7 @@ namespace RankCalculator
 {
     internal class Program
     {
-        private static void Main(string[] args)
+        private void Main(string[] args)
         {
             using (var c = ConnectToNats())
             {
@@ -32,8 +32,8 @@ namespace RankCalculator
             }
         }
         
-        private static string GetText(string id) => RedisDatabase.StringGet("TEXT-" + id);
-        private static bool SetRank(string id, double rank) => RedisDatabase.StringSet("RANK-" + id, rank);
+        private string GetText(string id) => RedisDatabase.StringGet("TEXT-" + id);
+        private bool SetRank(string id, double rank) => RedisDatabase.StringSet("RANK-" + id, rank);
 
         private static double CalculateRank(string text)
         {
@@ -53,15 +53,15 @@ namespace RankCalculator
             return factory.CreateConnection(options);
         }
         
-        private static ConnectionMultiplexer ConnectToRedis()
+        private static ConnectionMultiplexer ConnectToRedis(string region)
         {
-            var hostAndPort = Environment.GetEnvironmentVariable("REDIS_URL") ?? "localhost:6379";
+            var hostAndPort = Environment.GetEnvironmentVariable("DB_" + region.ToUpper()) ?? "localhost:6379";
             return ConnectionMultiplexer.Connect(hostAndPort);
         }
 
-        private static ConnectionMultiplexer Redis => ConnectToRedis();
+        private ConnectionMultiplexer _redis;
     
-        private static IDatabase RedisDatabase => Redis.GetDatabase();
-        private static IServer RedisServer => Redis.GetServer(Redis.GetEndPoints()[0]);
+        private IDatabase RedisDatabase => _redis.GetDatabase();
+        private IServer RedisServer => _redis.GetServer(_redis.GetEndPoints()[0]);
     }
 }

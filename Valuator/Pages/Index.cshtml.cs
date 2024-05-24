@@ -10,12 +10,16 @@ using StackExchange.Redis;
 
 namespace Valuator.Pages;
 
-public class IndexModel : RedisPageModel
+public class IndexModel : PageModel
 {
     private readonly ILogger<IndexModel> _logger;
     private readonly IConnection _connection = ConnectToNats();
 
-    public IndexModel(ILogger<IndexModel> logger, ConnectionMultiplexer redis) : base(redis)
+    private ConnectionMultiplexer _redis;
+    private IDatabase RedisDatabase => _redis.GetDatabase();
+    private IServer RedisServer => _redis.GetServer(_redis.GetEndPoints()[0]);
+    
+    public IndexModel(ILogger<IndexModel> logger)
     {
         _logger = logger;
     }
@@ -25,27 +29,27 @@ public class IndexModel : RedisPageModel
 
     }
 
-    public IActionResult OnPost(string text)
+    public IActionResult OnPost(string text, string region)
     {
-        if (String.IsNullOrEmpty(text))
+        if (String.IsNullOrEmpty(text) || String.IsNullOrEmpty(region))
         {
             return Redirect("about");
         }
         
         _logger.LogDebug(text);
-
-        string id = Guid.NewGuid().ToString();
+        _redis = ConnectToRedis(region);
         
+        string id = Guid.NewGuid().ToString();
+
         string similarityKey = "SIMILARITY-" + id;
         RedisDatabase.StringSet(similarityKey, GetSimilarity(text, id));
-        
+    
         string textKey = "TEXT-" + id;
         RedisDatabase.StringSet(textKey, text);
 
-
         GetRankAsync(id).Wait();
-
-        return Redirect($"summary?id={id}");
+        
+        return Redirect($"summary?id={id}&region={region}");
     }
     
     private static IConnection ConnectToNats()
@@ -59,7 +63,13 @@ public class IndexModel : RedisPageModel
             
         return factory.CreateConnection(options);
     }
-
+    
+    private static ConnectionMultiplexer ConnectToRedis(string region)
+    {
+        var hostAndPort = Environment.GetEnvironmentVariable("DB_" + region.ToUpper()) ?? "localhost:6379";
+        return ConnectionMultiplexer.Connect(hostAndPort);
+    }
+    
     private Task<double> GetRankAsync(string id)
     {
         var tcs = new TaskCompletionSource<double>();
