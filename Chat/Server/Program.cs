@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -7,6 +8,17 @@ namespace Server;
 
 class Program
 {
+    static byte[] GetBytesFromStringList(List<string> stringList, char delimiter)
+    {
+        // Join the list of strings into a single string using the delimiter
+        string joinedString = string.Join(delimiter, stringList);
+
+        // Convert the joined string into a byte array
+        byte[] byteArray = Encoding.UTF8.GetBytes(joinedString);
+
+        return byteArray;
+    }
+
     public static void StartListening()
     {
         // Разрешение сетевых имён
@@ -22,6 +34,8 @@ class Program
             SocketType.Stream,
             ProtocolType.Tcp);
 
+        List<string> messages = [];
+
         try
         {
             // BIND
@@ -32,11 +46,11 @@ class Program
 
             while (true)
             {
-                Console.WriteLine("Ожидание соединения клиента...");
+                Console.WriteLine("Waiting for a client ot connect...");
                 // ACCEPT
                 Socket handler = listener.Accept();
 
-                Console.WriteLine("Получение данных...");
+                Console.WriteLine("Receiving data...");
                 byte[] buf = new byte[1024];
                 string data = null;
                 while (true)
@@ -47,14 +61,15 @@ class Program
                     data += Encoding.UTF8.GetString(buf, 0, bytesRec);
                     if (data.IndexOf("<EOF>") > -1)
                     {
+                        messages.Add(data.Substring(0, data.Length - 5));
                         break;
                     }
                 }
 
-                Console.WriteLine("Полученный текст: {0}", data);
+                Console.WriteLine("Received message: {0}", data);
 
                 // Отправляем текст обратно клиенту
-                byte[] msg = Encoding.UTF8.GetBytes(data);
+                byte[] msg = GetBytesFromStringList(messages, ',');
 
                 // SEND
                 handler.Send(msg);
@@ -72,10 +87,11 @@ class Program
 
     static void Main(string[] args)
     {
-        Console.WriteLine("Запуск сервера...");
+        Console.WriteLine("Starting up the server...");
+        
         StartListening();
 
-        Console.WriteLine("\nНажмите ENTER чтобы выйти...");
+        Console.WriteLine("\nPress ENTER to exit...");
         Console.Read();
     }
 }
