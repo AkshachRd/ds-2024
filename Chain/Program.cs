@@ -4,48 +4,45 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
+struct Args
+{
+    public int ListeningPort;
+    public IPAddress NextHost;
+    public int NextPort;
+    public bool IsInitiator;
+}
+
 class Program
 {
     static void Main(string[] args)
     {
-        if (args.Length < 3)
-        {
-            Console.WriteLine("Usage: <listening-port> <next-host> <next-port> [true]");
-            return;
-        }
-
-        int listeningPort = int.Parse(args[0]);
-        string nextHost = args[1];
-        int nextPort = int.Parse(args[2]);
-        bool isInitiator = args is [_, _, _, "true"];
+        var myArgs = ParseArgs(args);
+        
+        Console.WriteLine("Listening port: {0}", myArgs.ListeningPort);
+        Console.WriteLine("Next host: {0}", myArgs.NextHost.ToString());
+        Console.WriteLine("Next port: {0}", myArgs.NextPort);
+        Console.WriteLine("Is initiator: {0}", myArgs.IsInitiator);
 
         int localX = int.Parse(Console.ReadLine());
 
         Socket listener = new Socket(IPAddress.Any.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-        listener.Bind(new IPEndPoint(IPAddress.Any, listeningPort));
+        listener.Bind(new IPEndPoint(IPAddress.Any, myArgs.ListeningPort));
         listener.Listen(10);
         Socket? previousMember;
 
-        var senderIpAddress = Dns.GetHostAddresses(nextHost)[0];
-        Socket sender = new Socket(senderIpAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-        IPEndPoint nextEndPoint = new IPEndPoint(senderIpAddress, nextPort);
+        Socket sender = new Socket(myArgs.NextHost.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+        IPEndPoint nextEndPoint = new IPEndPoint(myArgs.NextHost, myArgs.NextPort);
         sender.Connect(nextEndPoint);
         
-        Console.WriteLine("Listening port: {0}", listeningPort);
-        Console.WriteLine("Next host: {0}", nextHost);
-        Console.WriteLine("Next port: {0}", nextPort);
-        Console.WriteLine("Is initiator: {0}", isInitiator);
+        previousMember = ConnectToPreviousMember(listener);
+        if (previousMember == null)
+        {
+            Console.WriteLine("Can't connect to previous member");
+        }
 
-        if (isInitiator)
+        if (myArgs.IsInitiator)
         {
             SendMessage(sender, localX.ToString());
-            
-            previousMember = ConnectToPreviousMember(listener);
-            if (previousMember == null)
-            {
-                Console.WriteLine("Can't connect to previous member");
-            }
-            
             localX = int.Parse(ReceiveMessage(previousMember));
             SendMessage(sender, localX.ToString());
             localX = int.Parse(ReceiveMessage(previousMember));
@@ -53,12 +50,6 @@ class Program
         }
         else
         {
-            previousMember = ConnectToPreviousMember(listener);
-            if (previousMember == null)
-            {
-                Console.WriteLine("Can't connect to previous member");
-            }
-
             int receivedY = int.Parse(ReceiveMessage(previousMember));
             int maxValue = Math.Max(localX, receivedY);
             SendMessage(sender, maxValue.ToString());
@@ -151,5 +142,45 @@ class Program
         }
 
         return null;
+    }
+
+    static Args ParseArgs(string[] args)
+    {
+        if (args.Length < 3)
+        {
+            throw new Exception("Usage: <listening-port> <next-host> <next-port> [true]");
+        }
+        
+        var myArgs = new Args();
+        
+        myArgs.ListeningPort = 0;
+        if (!Int32.TryParse(args[0], out myArgs.ListeningPort))
+        {
+            throw new Exception("Invalid listening port");
+        }
+        
+        myArgs.NextHost = IPAddress.None;
+        if (!IPAddress.TryParse(args[1], out myArgs.NextHost))
+        {
+            try
+            {
+                var hostEntry = Dns.GetHostEntry(args[1]);
+                myArgs.NextHost = hostEntry.AddressList[0];
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Invalid next host name or IP address: {e.Message}");
+            }
+        }
+        
+        myArgs.NextPort = 0;
+        if (!Int32.TryParse(args[2], out myArgs.NextPort))
+        {
+            throw new Exception("Invalid next port");
+        }
+        
+        myArgs.IsInitiator = args is [_, _, _, "true"];
+        
+        return myArgs;
     }
 }

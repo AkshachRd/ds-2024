@@ -14,8 +14,25 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ed6d7f45-c3b9-484c-b57c-202c386782b5" name="Changes" comment="Убрал лишнее.">
+    <list default="true" id="ed6d7f45-c3b9-484c-b57c-202c386782b5" name="Changes" comment="Поправил форматирование.">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.ds-2024.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ds-2024.dir/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Chain/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chain/bin/Debug/net8.0/Chain.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/bin/Debug/net8.0/Chain.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chain/bin/Debug/net8.0/Chain.exe" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/bin/Debug/net8.0/Chain.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chain/bin/Debug/net8.0/Chain.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/bin/Debug/net8.0/Chain.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chain/obj/Chain.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/obj/Chain.csproj.nuget.dgspec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chain/obj/Chain.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/obj/Chain.csproj.nuget.g.props" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/Chain.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/Chain.AssemblyInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/Chain.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/Chain.AssemblyInfoInputs.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/Chain.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/Chain.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/Chain.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/Chain.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/Chain.sourcelink.json" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/Chain.sourcelink.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/apphost.exe" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/apphost.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/ref/Chain.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/ref/Chain.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/refint/Chain.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/refint/Chain.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chain/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/obj/project.assets.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chain/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/obj/project.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chain/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/obj/rider.project.restore.info" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,6 +65,7 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="mock://D:/Projects/ds-2024/Chain/Program.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://D:/Projects/ds-2024/Chain/Program.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Projects/ds-2024/Chain/Program.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Chain/obj/Debug/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="KubernetesApiPersistence">{}</component>
@@ -64,35 +82,36 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;.NET Project.Client.executor&quot;: &quot;Run&quot;,
-    &quot;.NET Project.Server.executor&quot;: &quot;Run&quot;,
-    &quot;Docker.compose.yaml: Compose Deployment.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;pa7&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Projects/ds-2024&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;File.Encoding&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    ".NET Project.Chain.executor": "Debug",
+    ".NET Project.Client.executor": "Run",
+    ".NET Project.Server.executor": "Run",
+    "Docker.compose.yaml: Compose Deployment.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "pa7",
+    "last_opened_file_path": "D:/Projects/ds-2024",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "File.Encoding",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;rider.external.source.directories&quot;: [
-      &quot;C:\\Users\\daniil.khudyakov\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\DecompilerCache&quot;,
-      &quot;C:\\Users\\daniil.khudyakov\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\SourcesCache&quot;,
-      &quot;C:\\Users\\daniil.khudyakov\\AppData\\Local\\Symbols\\src&quot;
+  "keyToStringList": {
+    "rider.external.source.directories": [
+      "C:\\Users\\daniil.khudyakov\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\DecompilerCache",
+      "C:\\Users\\daniil.khudyakov\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\SourcesCache",
+      "C:\\Users\\daniil.khudyakov\\AppData\\Local\\Symbols\\src"
     ]
   }
-}</component>
-  <component name="RunManager" selected=".NET Project.Client">
+}]]></component>
+  <component name="RunManager" selected=".NET Project.Chain">
     <configuration name="Chain" type="DotNetProject" factoryName=".NET Project">
-      <option name="EXE_PATH" value="" />
-      <option name="PROGRAM_PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
+      <option name="EXE_PATH" value="$PROJECT_DIR$/Chain/bin/Debug/net8.0/Chain.exe" />
+      <option name="PROGRAM_PARAMETERS" value="1234 localhost 1235 true" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Chain/bin/Debug/net8.0" />
       <option name="PASS_PARENT_ENVS" value="1" />
       <option name="USE_EXTERNAL_CONSOLE" value="0" />
       <option name="USE_MONO" value="0" />
@@ -102,7 +121,7 @@
       <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
       <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
       <option name="PROJECT_KIND" value="DotNetCore" />
-      <option name="PROJECT_TFM" value="" />
+      <option name="PROJECT_TFM" value="net8.0" />
       <method v="2">
         <option name="Build" />
       </method>
@@ -322,7 +341,23 @@
       <option name="project" value="LOCAL" />
       <updated>1716897372303</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Добавил README.">
+      <option name="closed" value="true" />
+      <created>1716897550969</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1716897550969</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Поправил форматирование.">
+      <option name="closed" value="true" />
+      <created>1716897561420</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1716897561420</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -337,6 +372,27 @@
     <MESSAGE value="Поправил баги." />
     <MESSAGE value="Устранил баг невозможности прочитать итоговое значение на всех элементах цепи." />
     <MESSAGE value="Убрал лишнее." />
-    <option name="LAST_COMMIT_MESSAGE" value="Убрал лишнее." />
+    <MESSAGE value="Добавил README." />
+    <MESSAGE value="Поправил форматирование." />
+    <option name="LAST_COMMIT_MESSAGE" value="Поправил форматирование." />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Chain/Program.cs</url>
+          <line>161</line>
+          <properties documentPath="D:\Projects\ds-2024\Chain\Program.cs" containingFunctionPresentation="Method 'ParseArgs'">
+            <startOffsets>
+              <option value="4679" />
+            </startOffsets>
+            <endOffsets>
+              <option value="4712" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
