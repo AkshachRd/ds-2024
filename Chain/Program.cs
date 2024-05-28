@@ -17,26 +17,28 @@ class Program
         int listeningPort = int.Parse(args[0]);
         string nextHost = args[1];
         int nextPort = int.Parse(args[2]);
-        bool isInitiator = args.Length == 4 && args[3] == "true";
+        bool isInitiator = args is [_, _, _, "true"];
 
         int localX = int.Parse(Console.ReadLine());
 
         Socket listener = new Socket(IPAddress.Any.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
         listener.Bind(new IPEndPoint(IPAddress.Any, listeningPort));
+        listener.Listen(10);
         Console.WriteLine("Listening port: {0}", listeningPort);
 
         var senderIpAddress = Dns.GetHostAddresses(nextHost)[0];
         Socket sender = new Socket(senderIpAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
         IPEndPoint nextEndPoint = new IPEndPoint(senderIpAddress, nextPort);
+        sender.Connect(nextEndPoint);
         Console.WriteLine("Next host: {0}", nextHost);
         Console.WriteLine("Next port: {0}", nextPort);
         Console.WriteLine("Is initiator: {0}", isInitiator);
 
         if (isInitiator)
         {
-            SendMessage(sender, nextEndPoint, localX.ToString());
+            SendMessage(sender, localX.ToString());
             localX = int.Parse(ReceiveMessage(listener));
-            SendMessage(sender, nextEndPoint, localX.ToString());
+            SendMessage(sender, localX.ToString());
             localX = int.Parse(ReceiveMessage(listener));
             Console.WriteLine("Answer: {0}", localX);
         }
@@ -44,24 +46,24 @@ class Program
         {
             int receivedY = int.Parse(ReceiveMessage(listener));
             int maxValue = Math.Max(localX, receivedY);
-            SendMessage(sender, nextEndPoint, maxValue.ToString());
+            SendMessage(sender, maxValue.ToString());
             localX = int.Parse(ReceiveMessage(listener));
             Console.WriteLine("Answer: {0}", localX);
         }
         
         sender.Shutdown(SocketShutdown.Both);
+        sender.Close();
         listener.Shutdown(SocketShutdown.Both);
+        listener.Close();
     }
 
-    static void SendMessage(Socket socket, EndPoint endPoint, string message)
+    static void SendMessage(Socket socket, string message)
     {
         try
         {
-            // CONNECT
-            socket.Connect(endPoint);
-
             Console.WriteLine("Remote address of socket connection: {0}",
                 socket.RemoteEndPoint.ToString());
+            Console.WriteLine("Sending data: {0}", message);
 
             // Подготовка данных к отправке
             byte[] msg = Encoding.UTF8.GetBytes(message + "<EOF>");
@@ -70,7 +72,6 @@ class Program
             int bytesSent = socket.Send(msg);
 
             // RELEASE
-            socket.Close();
         }
         catch (ArgumentNullException ane)
         {
@@ -97,9 +98,6 @@ class Program
 
         try
         {
-            // LISTEN
-            socket.Listen(10);
-
             while (true)
             {
                 Console.WriteLine("Waiting for a client ot connect...");

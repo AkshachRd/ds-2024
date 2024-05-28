@@ -14,12 +14,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ed6d7f45-c3b9-484c-b57c-202c386782b5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Chain/start.ps1" afterDir="false" />
+    <list default="true" id="ed6d7f45-c3b9-484c-b57c-202c386782b5" name="Changes" comment="Поправил баги.">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ds-2024.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ds-2024.dir/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Chain/Chain.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/Chain.csproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Chain/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chain/bin/Debug/net8.0/Chain.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/bin/Debug/net8.0/Chain.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chain/bin/Debug/net8.0/Chain.exe" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/bin/Debug/net8.0/Chain.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chain/bin/Debug/net8.0/Chain.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/bin/Debug/net8.0/Chain.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/Chain.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/Chain.AssemblyInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/Chain.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/Chain.AssemblyInfoInputs.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/Chain.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/Chain.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/Chain.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/Chain.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/Chain.sourcelink.json" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/Chain.sourcelink.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/apphost.exe" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/apphost.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/ref/Chain.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/ref/Chain.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/refint/Chain.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/obj/Debug/net8.0/refint/Chain.dll" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,10 +59,7 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock://D:/Projects/ds-2024/Chat/Client/Program.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Chat/Client/Program.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Chat/Server/Program.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://D:/Projects/ds-2024/Chat/Server/Program.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Chain/obj/Debug/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
@@ -285,7 +291,7 @@
       <workItem from="1716812757519" duration="966000" />
       <workItem from="1716813870611" duration="5184000" />
       <workItem from="1716885783391" duration="94000" />
-      <workItem from="1716885887590" duration="4634000" />
+      <workItem from="1716885887590" duration="6294000" />
     </task>
     <task id="LOCAL-00001" summary="Сделал шардинг БД.">
       <option name="closed" value="true" />
@@ -303,7 +309,15 @@
       <option name="project" value="LOCAL" />
       <updated>1716878903243</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Поправил баги.">
+      <option name="closed" value="true" />
+      <created>1716890842679</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1716890842679</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -315,6 +329,7 @@
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="Сделал шардинг БД." />
     <MESSAGE value="Разработал 6 лабу с возможность подключаться к ip на клиенте." />
-    <option name="LAST_COMMIT_MESSAGE" value="Разработал 6 лабу с возможность подключаться к ip на клиенте." />
+    <MESSAGE value="Поправил баги." />
+    <option name="LAST_COMMIT_MESSAGE" value="Поправил баги." />
   </component>
 </project>
