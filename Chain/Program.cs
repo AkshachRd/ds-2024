@@ -101,9 +101,6 @@ class Program
         {
             Console.WriteLine("Unexpected exception : {0}", e.ToString());
         }
-
-        // byte[] data = Encoding.UTF8.GetBytes(message);
-        // await socket.SendToAsync(new ArraySegment<byte>(data), SocketFlags.None, endPoint);
     }
 
     static string ReceiveMessage(Socket socket)
