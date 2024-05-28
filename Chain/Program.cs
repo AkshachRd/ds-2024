@@ -25,12 +25,13 @@ class Program
         listener.Bind(new IPEndPoint(IPAddress.Any, listeningPort));
         listener.Listen(10);
         Socket? previousMember;
-        Console.WriteLine("Listening port: {0}", listeningPort);
 
         var senderIpAddress = Dns.GetHostAddresses(nextHost)[0];
         Socket sender = new Socket(senderIpAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
         IPEndPoint nextEndPoint = new IPEndPoint(senderIpAddress, nextPort);
         sender.Connect(nextEndPoint);
+        
+        Console.WriteLine("Listening port: {0}", listeningPort);
         Console.WriteLine("Next host: {0}", nextHost);
         Console.WriteLine("Next port: {0}", nextPort);
         Console.WriteLine("Is initiator: {0}", isInitiator);
@@ -66,6 +67,7 @@ class Program
             Console.WriteLine("Answer: {0}", localX);
         }
 
+        // RELEASE
         sender.Shutdown(SocketShutdown.Both);
         sender.Close();
 
@@ -81,13 +83,8 @@ class Program
                 socket.RemoteEndPoint.ToString());
             Console.WriteLine("Sending data: {0}", message);
 
-            // Подготовка данных к отправке
             byte[] msg = Encoding.UTF8.GetBytes(message + "<EOF>");
-
-            // SEND
-            int bytesSent = socket.Send(msg);
-
-            // RELEASE
+            socket.Send(msg);
         }
         catch (ArgumentNullException ane)
         {
@@ -108,6 +105,7 @@ class Program
         try
         {
             Console.WriteLine("Receiving data...");
+            
             byte[] buf = new byte[1024];
             string data = null;
             while (true)
