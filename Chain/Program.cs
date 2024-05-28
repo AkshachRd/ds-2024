@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 class Program
 {
-    static async Task Main(string[] args)
+    static void Main(string[] args)
     {
         if (args.Length < 3)
         {
@@ -24,6 +24,7 @@ class Program
         Socket listener = new Socket(IPAddress.Any.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
         listener.Bind(new IPEndPoint(IPAddress.Any, listeningPort));
         listener.Listen(10);
+        Socket? previousMember;
         Console.WriteLine("Listening port: {0}", listeningPort);
 
         var senderIpAddress = Dns.GetHostAddresses(nextHost)[0];
@@ -37,23 +38,38 @@ class Program
         if (isInitiator)
         {
             SendMessage(sender, localX.ToString());
-            localX = int.Parse(ReceiveMessage(listener));
+            
+            previousMember = ConnectToPreviousMember(listener);
+            if (previousMember == null)
+            {
+                Console.WriteLine("Can't connect to previous member");
+            }
+            
+            localX = int.Parse(ReceiveMessage(previousMember));
             SendMessage(sender, localX.ToString());
-            localX = int.Parse(ReceiveMessage(listener));
+            localX = int.Parse(ReceiveMessage(previousMember));
             Console.WriteLine("Answer: {0}", localX);
         }
         else
         {
-            int receivedY = int.Parse(ReceiveMessage(listener));
+            previousMember = ConnectToPreviousMember(listener);
+            if (previousMember == null)
+            {
+                Console.WriteLine("Can't connect to previous member");
+            }
+
+            int receivedY = int.Parse(ReceiveMessage(previousMember));
             int maxValue = Math.Max(localX, receivedY);
             SendMessage(sender, maxValue.ToString());
-            localX = int.Parse(ReceiveMessage(listener));
+            localX = int.Parse(ReceiveMessage(previousMember));
+            SendMessage(sender, localX.ToString());
             Console.WriteLine("Answer: {0}", localX);
         }
-        
+
         sender.Shutdown(SocketShutdown.Both);
         sender.Close();
-        listener.Shutdown(SocketShutdown.Both);
+
+        previousMember.Close();
         listener.Close();
     }
 
@@ -92,41 +108,27 @@ class Program
 
     static string ReceiveMessage(Socket socket)
     {
-        // byte[] buffer = new byte[1024];
-        // var result = await socket.ReceiveFromAsync(new ArraySegment<byte>(buffer), SocketFlags.None);
-        // return Encoding.UTF8.GetString(buffer, 0, result.ReceivedBytes);
-
         try
         {
+            Console.WriteLine("Receiving data...");
+            byte[] buf = new byte[1024];
+            string data = null;
             while (true)
             {
-                Console.WriteLine("Waiting for a client ot connect...");
-                // ACCEPT
-                Socket handler = socket.Accept();
+                // RECEIVE
+                int bytesRec = socket.Receive(buf);
 
-                Console.WriteLine("Receiving data...");
-                byte[] buf = new byte[1024];
-                string data = null;
-                while (true)
+                data += Encoding.UTF8.GetString(buf, 0, bytesRec);
+                if (data.IndexOf("<EOF>") > -1)
                 {
-                    // RECEIVE
-                    int bytesRec = handler.Receive(buf);
-
-                    data += Encoding.UTF8.GetString(buf, 0, bytesRec);
-                    if (data.IndexOf("<EOF>") > -1)
-                    {
-                        break;
-                    }
+                    break;
                 }
-
-                data = data.Substring(0, data.Length - 5);
-                Console.WriteLine("Received message: {0}", data);
-
-                // RELEASE
-                handler.Close();
-
-                return data;
             }
+
+            data = data.Substring(0, data.Length - 5);
+            Console.WriteLine("Received message: {0}", data);
+
+            return data;
         }
         catch (Exception e)
         {
@@ -134,5 +136,25 @@ class Program
         }
 
         return "";
+    }
+    
+    static Socket? ConnectToPreviousMember(Socket socket)
+    {
+        try
+        {
+            while (true)
+            {
+                Console.WriteLine("Waiting for a client to connect...");
+                // ACCEPT
+                Socket? handler = socket.Accept();
+                return handler;
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.ToString());
+        }
+
+        return null;
     }
 }

@@ -16,7 +16,6 @@
   <component name="ChangeListManager">
     <list default="true" id="ed6d7f45-c3b9-484c-b57c-202c386782b5" name="Changes" comment="Поправил баги.">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ds-2024.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ds-2024.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chain/Chain.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/Chain.csproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Chain/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/Program.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Chain/bin/Debug/net8.0/Chain.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/bin/Debug/net8.0/Chain.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Chain/bin/Debug/net8.0/Chain.exe" beforeDir="false" afterPath="$PROJECT_DIR$/Chain/bin/Debug/net8.0/Chain.exe" afterDir="false" />

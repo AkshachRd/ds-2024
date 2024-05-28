@@ -1,5 +1,5 @@
 # Путь к проекту
-$project_path = "D:\Projects\ds-2024\Chain\Chain.csproj"
+$project_path = "..\Chain\Chain.csproj"
 
 # Выполнение сборки проекта
 Write-Host "Building the project..."
@@ -22,7 +22,7 @@ $base_port = 1234
 $next_host = "localhost"
 
 # Путь к скомпилированному исполняемому файлу
-$executable_path = "D:\Projects\ds-2024\Chain\bin\Debug\net8.0\Chain.exe"
+$executable_path = "..\Chain\bin\Debug\net8.0\Chain.exe"
 
 # Запуск процессов
 for ($i = 0; $i -lt $num_processes; $i++) {
