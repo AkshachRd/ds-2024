@@ -19,14 +19,14 @@ class Program
         return byteArray;
     }
 
-    public static void StartListening()
+    public static void StartListening(int port)
     {
         // Разрешение сетевых имён
 
         // Привязываем сокет ко всем интерфейсам на текущей машинe
         IPAddress ipAddress = IPAddress.Any;
 
-        IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11000);
+        IPEndPoint localEndPoint = new IPEndPoint(ipAddress, port);
 
         // CREATE
         Socket listener = new Socket(
@@ -87,9 +87,20 @@ class Program
 
     static void Main(string[] args)
     {
+        if (args.Length < 1)
+        {
+            Console.WriteLine("Please enter arguments in format: prog.exe <port>");
+        }
+        
+        var port = 0;
+        if (!Int32.TryParse(args[0], out port))
+        {
+            Console.WriteLine("Invalid port");
+        }
+        
         Console.WriteLine("Starting up the server...");
         
-        StartListening();
+        StartListening(port);
 
         Console.WriteLine("\nPress ENTER to exit...");
         Console.Read();

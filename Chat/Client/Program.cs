@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -93,7 +94,7 @@ class Program
             try
             {
                 var hostEntry = Dns.GetHostEntry(args[0]);
-                ipAddress = hostEntry.AddressList[0];
+                ipAddress = hostEntry.AddressList.Last();
             }
             catch (Exception e)
             {
