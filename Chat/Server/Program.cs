@@ -90,12 +90,14 @@ class Program
         if (args.Length < 1)
         {
             Console.WriteLine("Please enter arguments in format: prog.exe <port>");
+            return;
         }
         
         var port = 0;
         if (!Int32.TryParse(args[0], out port))
         {
             Console.WriteLine("Invalid port");
+            return;
         }
         
         Console.WriteLine("Starting up the server...");

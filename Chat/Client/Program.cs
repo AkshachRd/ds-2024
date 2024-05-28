@@ -86,6 +86,7 @@ class Program
         if (args.Length < 3)
         {
             Console.WriteLine("Please enter arguments in format: prog.exe <host address> <port> <message>");
+            return;
         }
 
         var ipAddress = IPAddress.None;
@@ -107,6 +108,7 @@ class Program
         if (!Int32.TryParse(args[1], out port))
         {
             Console.WriteLine("Invalid port");
+            return;
         }
         
         var message = args[2];
