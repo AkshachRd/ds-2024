@@ -165,7 +165,7 @@ class Program
             try
             {
                 var hostEntry = Dns.GetHostEntry(args[1]);
-                myArgs.NextHost = hostEntry.AddressList[0];
+                myArgs.NextHost = hostEntry.AddressList.Last();
             }
             catch (Exception e)
             {
