@@ -83,10 +83,7 @@ public class IndexModel : PageModel
     {
         var tcs = new TaskCompletionSource<double>();
 
-        var subscription = _connection.SubscribeAsync("rank.calculated", (sender, args) =>
-        {
-            // NOP
-        });
+        var subscription = _connection.SubscribeAsync("rank.calculated");
         subscription.MessageHandler += (sender, args) =>
         {
             try
