@@ -57,10 +57,16 @@ services:
     environment:
       - ASPNETCORE_URLS=http://+:5010
       - NATS_URL=nats://nats:4222
+      - DB_RUS=db-rus:6379
+      - DB_EU=db-eu:6379
+      - DB_OTHER=db-other:6379
     ports:
       - 5010:5010
     depends_on: 
       - nats
+      - db-rus
+      - db-eu
+      - db-other
   event-logger-rank:
     environment:
       - NATS_URL=nats://nats:4222

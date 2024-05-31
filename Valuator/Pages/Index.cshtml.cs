@@ -2,13 +2,21 @@ using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.Json;
 using NATS.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
+using Newtonsoft.Json;
 
 namespace Valuator.Pages;
+
+public class RankCalculatorData
+{
+    public string Id { get; set; }
+    public string Region { get; set; }
+}
 
 public class IndexModel : PageModel
 {
@@ -47,11 +55,8 @@ public class IndexModel : PageModel
         string textKey = "TEXT-" + id;
         RedisDatabase.StringSet(textKey, text);
 
-        var rankTask = GetRankAsync(text);
+        var rankTask = GetRankAsync(id, region);
         rankTask.Wait();
-        
-        string rankKey = "RANK-" + id;
-        RedisDatabase.StringSet(rankKey, rankTask.Result);
         
         return Redirect($"summary?id={id}&region={region}");
     }
@@ -74,15 +79,19 @@ public class IndexModel : PageModel
         return ConnectionMultiplexer.Connect(hostAndPort);
     }
     
-    private Task<double> GetRankAsync(string text)
+    private Task<double> GetRankAsync(string id, string region)
     {
         var tcs = new TaskCompletionSource<double>();
 
-        var subscription = _connection.SubscribeAsync("rank.calculated");
+        var subscription = _connection.SubscribeAsync("rank.calculated", (sender, args) =>
+        {
+            // NOP
+        });
         subscription.MessageHandler += (sender, args) =>
         {
             try
             {
+                
                 var result = BitConverter.ToDouble(args.Message.Data);
                 tcs.SetResult(result);
             }
@@ -95,7 +104,14 @@ public class IndexModel : PageModel
         };
         subscription.Start();
 
-        _connection.Publish("rank.calculate", Encoding.UTF8.GetBytes(text));
+        var data = new RankCalculatorData
+        {
+            Id = id,
+            Region = region
+        };
+        var serializedData = SerializeData(data);
+        var encodedData = Encoding.UTF8.GetBytes(serializedData);
+        _connection.Publish("rank.calculate", encodedData);
     
         return tcs.Task;
     }
@@ -109,5 +125,10 @@ public class IndexModel : PageModel
         _connection.Publish("similarity.calculated", BitConverter.GetBytes(similarity));
 
         return similarity;
+    }
+    
+    public string SerializeData<T>(T data)
+    {
+        return JsonConvert.SerializeObject(data);
     }
 }
